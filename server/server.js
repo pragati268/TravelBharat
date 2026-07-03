@@ -5,6 +5,7 @@ const app = express();
 import errorHandler from "./middleware/errorMiddleware.js";
 
 import stateRouter from "./routes/stateRouter.js";
+import cityRouter from "./routes/cityRouter.js";
 
 import connectDB from "./config/db.js";
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use("/api/states", stateRouter);
+app.use("/api/cities", cityRouter);
 
 app.use(errorHandler);
 

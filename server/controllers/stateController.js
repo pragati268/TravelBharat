@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import stateModel from "../models/state-model.js";
+import cityModel from "../models/city-model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const createState = asyncHandler(async (req, res) => {
@@ -87,5 +88,15 @@ export const deleteState = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "State deleted successfully",
+  });
+});
+
+export const getCitiesByStateId = asyncHandler(async (req, res) => {
+  const { stateId } = req.params;
+  const cities = await cityModel.find({ state: stateId }).sort({ name: 1 });
+  res.status(200).json({
+    success: true,
+    message: "Cities fetched successfully",
+    data: cities,
   });
 });
