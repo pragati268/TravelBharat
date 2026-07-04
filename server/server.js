@@ -7,6 +7,7 @@ import errorHandler from "./middleware/errorMiddleware.js";
 import stateRouter from "./routes/stateRouter.js";
 import cityRouter from "./routes/cityRouter.js";
 import categoryRouter from "./routes/categoryRouter.js";
+import touristPlaceRouter from "./routes/touristPlaceRouter.js";
 
 import connectDB from "./config/db.js";
 
@@ -22,6 +23,7 @@ app.use(express.static("public"));
 app.use("/api/states", stateRouter);
 app.use("/api/cities", cityRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/places", touristPlaceRouter);
 
 app.use(errorHandler);
 

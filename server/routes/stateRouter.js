@@ -5,10 +5,10 @@ import { createState, getAll, getStateBySlug, updateState, deleteState, getCitie
 
 
 router.post("/", createState);
-router.get("/all", getAll);
-router.get("/slug/:slug", getStateBySlug);
-router.put("/update/:id", updateState);
-router.delete("/delete/:id", deleteState);
+router.get("/", getAll);
+router.get("/:slug", getStateBySlug);
+router.put("/:id", updateState);
+router.delete("/:id", deleteState);
 router.get("/:stateId/cities", getCitiesByStateId);
 
 export default router;
