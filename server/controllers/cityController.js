@@ -1,17 +1,15 @@
-import mongoose from "mongoose";
-
-import cityModel from "../models/city-model.js";
+import City from "../models/city-model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const createCity = asyncHandler(async (req, res) => {
-  const state = await mongoose.model('State').findById(req.body.state);
+  const state = await State.findById(req.body.state);
   if (!state) {
     const error = new Error("State not found");
     error.statusCode = 404;
     throw error;
   }
 
-  const existingCity = await cityModel.findOne({
+  const existingCity = await City.findOne({
     $or: [
         { name: req.body.name }, 
         { slug: req.body.slug }
@@ -25,7 +23,7 @@ export const createCity = asyncHandler(async (req, res) => {
     throw error;
   }
 
-  const city = await cityModel.create(req.body);
+  const city = await City.create(req.body);
   res.status(201).json({
     success: true,
     message: "City created successfully",
@@ -34,7 +32,7 @@ export const createCity = asyncHandler(async (req, res) => {
 });
 
 export const getAllCities = asyncHandler(async (req, res) => {
-  const cities = await cityModel.find().sort({ name: 1 });
+  const cities = await City.find().sort({ name: 1 });
   res.status(200).json({
     success: true,
     message: "Cities fetched successfully",
@@ -44,7 +42,7 @@ export const getAllCities = asyncHandler(async (req, res) => {
 
 export const getCityBySlug = asyncHandler(async (req, res) => {
   const { slug } = req.params;
-  const city = await cityModel.findOne({ slug });
+  const city = await City.findOne({ slug });
   if (!city) {
     const error = new Error("City not found");
     error.statusCode = 404;
@@ -59,7 +57,7 @@ export const getCityBySlug = asyncHandler(async (req, res) => {
 
 export const updateCity = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const city = await cityModel.findByIdAndUpdate(id, req.body, {
+  const city = await City.findByIdAndUpdate(id, req.body, {
     new: true,
   });
   if (!city) {
@@ -76,7 +74,7 @@ export const updateCity = asyncHandler(async (req, res) => {
 
 export const deleteCity = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const city = await cityModel.findByIdAndDelete(id);
+  const city = await City.findByIdAndDelete(id);
   if (!city) {
     const error = new Error("City not found");
     error.statusCode = 404;
@@ -86,5 +84,15 @@ export const deleteCity = asyncHandler(async (req, res) => {
     success: true,
     message: "City deleted successfully",
     data: city,
+  });
+});
+
+export const getCitiesByStateId = asyncHandler(async (req, res) => {
+  const { stateId } = req.params;
+  const cities = await City.find({ state: stateId }).sort({ name: 1 });
+  res.status(200).json({
+    success: true,
+    message: "Cities fetched successfully",
+    data: cities,
   });
 });

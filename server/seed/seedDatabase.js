@@ -4,6 +4,8 @@ import State from '../models/state-model.js';
 import City from '../models/city-model.js';
 import { allStates } from './stateSeed.js';
 import { citiesByState } from './citySeed.js';
+import { seedCategories } from './categorySeed.js';
+import { seedTouristPlaces } from './touristPlaceSeed.js';
 
 dotenv.config();
 
@@ -55,16 +57,25 @@ async function main() {
     console.log('\n--- Seeding Cities ---');
     const citiesInserted = await seedCities();
 
+    console.log('\n--- Seeding Categories ---');
+    const catResult = await seedCategories();
+
+    console.log('\n--- Seeding Tourist Places ---');
+    const tpResult = await seedTouristPlaces();
+
     const stateCount = await State.countDocuments();
     const cityCount = await City.countDocuments();
+    const catCount = await mongoose.connection.db.collection('categories').countDocuments();
+    const tpCount = await mongoose.connection.db.collection('touristplaces').countDocuments();
 
     console.log('\n========================================');
     console.log('         SEEDING COMPLETE');
     console.log('========================================');
-    console.log(`  New states added:    ${statesInserted}`);
-    console.log(`  Total states in DB:  ${stateCount}`);
-    console.log(`  New cities added:    ${citiesInserted}`);
-    console.log(`  Total cities in DB:  ${cityCount}`);
+    console.log(`  States:           ${statesInserted} new, ${stateCount} total`);
+    console.log(`  Cities:           ${citiesInserted} new, ${cityCount} total`);
+    console.log(`  Categories:       ${catResult.inserted} new, ${catCount} total`);
+    console.log(`  Tourist Places:   ${tpResult.inserted} inserted, ${tpResult.skipped} skipped, ${tpResult.failed} failed`);
+    console.log(`  Total in DB:      ${tpCount} tourist places`);
     console.log('========================================\n');
 
     await mongoose.disconnect();
