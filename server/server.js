@@ -1,13 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 const app = express();
 
 import errorHandler from "./middleware/errorMiddleware.js";
 
-import stateRouter from "./routes/stateRouter.js";
-import cityRouter from "./routes/cityRouter.js";
-import categoryRouter from "./routes/categoryRouter.js";
-import touristPlaceRouter from "./routes/touristPlaceRouter.js";
+import indexRouter from "./routes/indexRouter.js";
 
 import connectDB from "./config/db.js";
 
@@ -19,11 +17,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(cookieParser());
 
-app.use("/api/states", stateRouter);
-app.use("/api/cities", cityRouter);
-app.use("/api/categories", categoryRouter);
-app.use("/api/places", touristPlaceRouter);
+app.use("/api", indexRouter);
 
 app.use(errorHandler);
 
