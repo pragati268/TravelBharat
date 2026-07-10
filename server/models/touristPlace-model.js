@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { imageSchema } from "./city-model.js";
 
 const touristPlaceSchema = new mongoose.Schema({
   name: {
@@ -66,14 +67,10 @@ const touristPlaceSchema = new mongoose.Schema({
     required: true,
   },
 
-  coverImage: {
-    type: String,
-  },
-
+  coverImage: imageSchema,
+  
   gallery: [
-    {
-      type: String,
-    },
+    imageSchema
   ],
 
   featured: {

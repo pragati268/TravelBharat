@@ -1,14 +1,11 @@
 import State from "../models/state-model.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { deleteImageFromCloudinary } from "../utils/cloudinaryHelpers.js";
 
 export const createState = asyncHandler(async (req, res) => {
   const existingState = await State.findOne({
-    $or: 
-    [
-        { name: req.body.name }, 
-        { slug: req.body.slug }
-    ],
-    _id: { $ne: req.body._id } 
+    $or: [{ name: req.body.name }, { slug: req.body.slug }],
+    _id: { $ne: req.body._id },
   });
 
   if (existingState) {
@@ -17,7 +14,18 @@ export const createState = asyncHandler(async (req, res) => {
     throw error;
   }
 
-  const state = await State.create(req.body);
+  const stateData = {
+    ...req.body,
+  };
+
+  if (req.file) {
+    stateData.coverImage = {
+      url: req.file.path,
+      public_id: req.file.filename,
+    };
+  }
+
+  const state = await State.create(stateData);
 
   res.status(201).json({
     success: true,
@@ -54,38 +62,58 @@ export const getStateBySlug = asyncHandler(async (req, res) => {
 
 export const updateState = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const state = await State.findByIdAndUpdate(id, req.body, {
-    new: true,
-    runValidators: true,
-  });
 
+  const state = await State.findById(id);
   if (!state) {
     const error = new Error("State not found");
     error.statusCode = 404;
     throw error;
   }
 
+  const stateData = {
+    ...req.body,
+  };
+
+  if (req.file) {
+    if (state.coverImage?.public_id) {
+      await deleteImageFromCloudinary(state.coverImage.public_id);
+    }
+    stateData.coverImage = {
+      url: req.file.path,
+      public_id: req.file.filename,
+    };
+  }
+
+  const updatedState = await State.findByIdAndUpdate(id, stateData, {
+    new: true,
+    runValidators: true,
+  });
+
   res.status(200).json({
     success: true,
     message: "State updated successfully",
-    data: state,
+    data: updatedState,
   });
 });
 
 export const deleteState = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const state = await State.findByIdAndDelete(id);
 
+  const state = await State.findById(id);
   if (!state) {
     const error = new Error("State not found");
     error.statusCode = 404;
     throw error;
   }
+
+  if (state.coverImage?.public_id) {
+    await deleteImageFromCloudinary(state.coverImage.public_id);
+  }
+
+  await State.findByIdAndDelete(id);
 
   res.status(200).json({
     success: true,
     message: "State deleted successfully",
   });
 });
-
-

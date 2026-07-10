@@ -1,5 +1,7 @@
 import City from "../models/city-model.js";
+import State from "../models/state-model.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { deleteImageFromCloudinary } from "../utils/cloudinaryHelpers.js";
 
 export const createCity = asyncHandler(async (req, res) => {
   const state = await State.findById(req.body.state);
@@ -11,7 +13,7 @@ export const createCity = asyncHandler(async (req, res) => {
 
   const existingCity = await City.findOne({
     $or: [
-        { name: req.body.name }, 
+        { name: req.body.name },
         { slug: req.body.slug }
     ],
     _id: { $ne: req.body._id },
@@ -23,7 +25,16 @@ export const createCity = asyncHandler(async (req, res) => {
     throw error;
   }
 
-  const city = await City.create(req.body);
+  const cityData = { ...req.body };
+
+  if (req.file) {
+    cityData.coverImage = {
+      url: req.file.path,
+      public_id: req.file.filename,
+    };
+  }
+
+  const city = await City.create(cityData);
   res.status(201).json({
     success: true,
     message: "City created successfully",
@@ -57,29 +68,53 @@ export const getCityBySlug = asyncHandler(async (req, res) => {
 
 export const updateCity = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const city = await City.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+
+  const city = await City.findById(id);
   if (!city) {
     const error = new Error("City not found");
     error.statusCode = 404;
     throw error;
   }
+
+  const cityData = { ...req.body };
+
+  if (req.file) {
+    if (city.coverImage?.public_id) {
+      await deleteImageFromCloudinary(city.coverImage.public_id);
+    }
+    cityData.coverImage = {
+      url: req.file.path,
+      public_id: req.file.filename,
+    };
+  }
+
+  const updatedCity = await City.findByIdAndUpdate(id, cityData, {
+    new: true,
+  });
+
   res.status(200).json({
     success: true,
     message: "City updated successfully",
-    data: city,
+    data: updatedCity,
   });
 });
 
 export const deleteCity = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const city = await City.findByIdAndDelete(id);
+
+  const city = await City.findById(id);
   if (!city) {
     const error = new Error("City not found");
     error.statusCode = 404;
     throw error;
   }
+
+  if (city.coverImage?.public_id) {
+    await deleteImageFromCloudinary(city.coverImage.public_id);
+  }
+
+  await City.findByIdAndDelete(id);
+
   res.status(200).json({
     success: true,
     message: "City deleted successfully",

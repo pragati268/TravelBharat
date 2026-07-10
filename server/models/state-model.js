@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { imageSchema } from './city-model.js';  
 
 const stateSchema = new mongoose.Schema({
   name: {
@@ -8,11 +9,7 @@ const stateSchema = new mongoose.Schema({
     trim: true,
   },
 
-  coverImage: {
-    type: String,
-    // required: true,
-    default: "",
-  },
+  coverImage: imageSchema,
 
   capital: {
     type: String,

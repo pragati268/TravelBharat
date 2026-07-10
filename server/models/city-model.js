@@ -1,5 +1,16 @@
 import mongoose from 'mongoose';
 
+const imageSchema = new mongoose.Schema({
+    url: {
+        type: String,
+        required: true,
+    },
+    public_id: {
+        type: String,
+        required: true,
+    },
+}, { _id: false });
+
 const citySchema = new mongoose.Schema({
     name: {
         type: String,
@@ -43,11 +54,7 @@ const citySchema = new mongoose.Schema({
         trim: true,
     },
 
-    coverImage: {
-        type: String,
-        trim: true,
-        default: "",
-    },
+    coverImage: imageSchema,
 
     featured: {
         type: Boolean,
@@ -63,5 +70,4 @@ const citySchema = new mongoose.Schema({
 
 const City = mongoose.model('City', citySchema);
 export default City;
-
-
+export { imageSchema };

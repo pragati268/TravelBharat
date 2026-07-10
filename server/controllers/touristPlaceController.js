@@ -3,6 +3,7 @@ import City from "../models/city-model.js";
 import Category from "../models/category-model.js";
 import State from "../models/state-model.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { deleteImageFromCloudinary, deleteMultipleImages } from "../utils/cloudinaryHelpers.js";
 
 export const createTouristPlace = asyncHandler(async (req, res) => {
   // Check if city exists
@@ -44,8 +45,26 @@ export const createTouristPlace = asyncHandler(async (req, res) => {
     throw error;
   }
 
+  const placeData = { ...req.body };
+
+  if (req.files) {
+    if (req.files.coverImage) {
+      placeData.coverImage = {
+        url: req.files.coverImage[0].path,
+        public_id: req.files.coverImage[0].filename,
+      };
+    }
+
+    if (req.files.gallery) {
+      placeData.gallery = req.files.gallery.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+      }));
+    }
+  }
+
   // Create tourist place
-  const touristPlace = await TouristPlace.create(req.body);
+  const touristPlace = await TouristPlace.create(placeData);
 
   res.status(201).json({
     success: true,
@@ -115,6 +134,13 @@ export const updateTouristPlace = asyncHandler(async (req, res) => {
 
   const { id } = req.params;
 
+  const touristPlace = await TouristPlace.findById(id);
+  if (!touristPlace) {
+    const error = new Error("Tourist place not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
   // Check city
   if (req.body.city) {
     const city = await City.findById(req.body.city);
@@ -168,37 +194,71 @@ export const updateTouristPlace = asyncHandler(async (req, res) => {
 
   }
 
-  const touristPlace = await TouristPlace.findByIdAndUpdate(
+  const placeData = { ...req.body };
+
+  if (req.files) {
+    if (req.files.coverImage) {
+      if (touristPlace.coverImage?.public_id) {
+        await deleteImageFromCloudinary(touristPlace.coverImage.public_id);
+      }
+      placeData.coverImage = {
+        url: req.files.coverImage[0].path,
+        public_id: req.files.coverImage[0].filename,
+      };
+    }
+
+    if (req.files.gallery) {
+      const oldPublicIds = touristPlace.gallery
+        .filter((img) => img?.public_id)
+        .map((img) => img.public_id);
+      if (oldPublicIds.length > 0) {
+        await deleteMultipleImages(oldPublicIds);
+      }
+      placeData.gallery = req.files.gallery.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+      }));
+    }
+  }
+
+  const updatedPlace = await TouristPlace.findByIdAndUpdate(
     id,
-    req.body,
+    placeData,
     {
       new: true,
       runValidators: true,
     }
   );
 
-  if (!touristPlace) {
-    const error = new Error("Tourist place not found");
-    error.statusCode = 404;
-    throw error;
-  }
-
   res.status(200).json({
     success: true,
     message: "Tourist place updated successfully",
-    data: touristPlace,
+    data: updatedPlace,
   });
 
 });
 
 export const deleteTouristPlace = asyncHandler(async (req, res) => {
-  const touristPlace = await TouristPlace.findByIdAndDelete(req.params.id);
+  const touristPlace = await TouristPlace.findById(req.params.id);
 
   if (!touristPlace) {
     const error = new Error("Tourist place not found");
     error.statusCode = 404;
     throw error;
   }
+
+  if (touristPlace.coverImage?.public_id) {
+    await deleteImageFromCloudinary(touristPlace.coverImage.public_id);
+  }
+
+  const galleryPublicIds = touristPlace.gallery
+    .filter((img) => img?.public_id)
+    .map((img) => img.public_id);
+  if (galleryPublicIds.length > 0) {
+    await deleteMultipleImages(galleryPublicIds);
+  }
+
+  await TouristPlace.findByIdAndDelete(req.params.id);
 
   res.status(200).json({
     success: true,
