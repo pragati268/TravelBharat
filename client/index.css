@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #14532D;
+  --color-primary-light: #1F7A4D;
+  --color-accent: #D4A017;
+  --color-surface: #F8F5EE;
+  --color-dark: #1F2937;
+  --color-muted: #6B7280;
+
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: #F8F5EE;
+  color: #1F2937;
+}
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+.animate-ken-burns {
+  animation: kenBurns 12s ease-in-out infinite alternate;
+}
+
+.text-shadow {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
