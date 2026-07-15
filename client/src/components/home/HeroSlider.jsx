@@ -2,20 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 
 const images = [
   {
-    src: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=80",
+    src: "https://res.cloudinary.com/iq57dq0u/image/upload/v1784016429/travelbharat/tourist-places/fbav2duy8qr6h1unzzpq.jpg",
     alt: "Taj Mahal at sunrise",
   },
   {
-    src: "https://images.unsplash.com/photo-1514222134-b57cbb8ce073?w=1920&q=80",
+    src: "https://res.cloudinary.com/iq57dq0u/image/upload/v1783665510/travelbharat/tourist-places/znvhyoew6o9tctxop3py.jpg",
     alt: "Golden Temple, Amritsar",
   },
   {
-    src: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1920&q=80",
-    alt: "Kerala backwaters",
+    src: "https://res.cloudinary.com/iq57dq0u/image/upload/v1784017204/travelbharat/tourist-places/qtddkdjx197s8rhtp9uh.jpg",
+    alt: "Alleppey Backwaters, Kerala",
   },
   {
-    src: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=1920&q=80",
-    alt: "Hawa Mahal, Jaipur",
+    src: "https://res.cloudinary.com/iq57dq0u/image/upload/v1784016827/travelbharat/tourist-places/mirtnurht39aguqijfk3.jpg",
+    alt: "Amer Fort, Jaipur",
   },
   {
     src: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1920&q=80",
