@@ -62,7 +62,7 @@ const ExploreByCategories = () => {
   return (
     <section className="relative overflow-hidden bg-white py-24 sm:py-28 lg:py-36">
       {/* Subtle background decoration */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-primary/[0.02] via-transparent to-accent/[0.02] blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-linear-to-br from-primary/2 via-transparent to-accent/2 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -76,7 +76,7 @@ const ExploreByCategories = () => {
           <div className="max-w-2xl">
             {/* Badge */}
             <motion.div variants={fadeUp} className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.05] px-4 py-1.5 font-body text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-4 py-1.5 font-body text-xs font-semibold uppercase tracking-[0.2em] text-primary">
                 <Sparkles size={14} strokeWidth={2} />
                 Explore by Interest
               </span>
@@ -88,7 +88,7 @@ const ExploreByCategories = () => {
               className="mt-5 font-heading text-3xl font-bold tracking-tight text-dark sm:text-4xl lg:text-5xl"
             >
               Find Your Perfect{" "}
-              <span className="bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent">
                 Journey
               </span>
             </motion.h2>
@@ -107,7 +107,7 @@ const ExploreByCategories = () => {
               variants={fadeUp}
               className="mt-6 flex items-center gap-3"
             >
-              <div className="h-px w-12 bg-gradient-to-r from-primary to-primary/0" />
+              <div className="h-px w-12 bg-linear-to-r from-primary to-primary/0" />
               <div className="h-1.5 w-1.5 rotate-45 bg-primary/40" />
               <div className="h-px w-20 bg-primary/15" />
             </motion.div>
@@ -141,7 +141,7 @@ const ExploreByCategories = () => {
             ? Array.from({ length: 9 }).map((_, i) => (
                 <div
                   key={i}
-                  className="overflow-hidden rounded-2xl border border-dark/5 bg-dark/[0.02] p-6 sm:p-7"
+                  className="overflow-hidden rounded-2xl border border-dark/5 bg-dark/2 p-6 sm:p-7"
                 >
                   <div className="h-14 w-14 animate-pulse rounded-xl bg-dark/5" />
                   <div className="mt-4 h-5 w-2/3 animate-pulse rounded-full bg-dark/5" />
