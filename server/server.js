@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import "dotenv/config.js";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 
@@ -18,6 +19,16 @@ console.log("Cloudinary connected");
 console.log(cloudinary.config().cloud_name);
 
 const PORT = process.env.PORT || 3000;
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

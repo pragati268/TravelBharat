@@ -53,7 +53,7 @@ export const getAllCities = asyncHandler(async (req, res) => {
 
 export const getCityBySlug = asyncHandler(async (req, res) => {
   const { slug } = req.params;
-  const city = await City.findOne({ slug });
+  const city = await City.findOne({ slug }).populate("state", "name slug capital");
   if (!city) {
     const error = new Error("City not found");
     error.statusCode = 404;
